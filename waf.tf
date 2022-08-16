@@ -30,7 +30,7 @@ resource "aws_wafv2_web_acl" "waf" {
 
         scope_down_statement {
           geo_match_statement {
-            country_codes = ["US", "NL"]
+            country_codes = ["ap"]
           }
         }
       }
