@@ -1,7 +1,7 @@
 variable "email" {
   description = "Email for SNS "
   type = string
-  default = "gudiyadaya@gmail.com"
+  default = "gudiyadaya720@gmail.com"
 }
 resource "aws_sns_topic" "user_updates" {
   name = "terraform"
