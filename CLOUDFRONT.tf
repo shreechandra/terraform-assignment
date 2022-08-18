@@ -1,25 +1,55 @@
-resource "aws_s3_bucket" "buckettt95" {
-  bucket = "assign-buckettt95"
+resource "aws_s3_bucket" "bucketttt95" {
+  bucket = "assign-buckettt95"  
   tags = {
     Name        = "Assign_bucket123"
-  }
-  versioning {
-    enabled = true
-  }
+  }  
 }
 resource "aws_s3_bucket_acl" "b_acl" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.bucketttt95.id
+  acl    = "private"
+}
+resource "aws_s3_bucket_website_configuration" "config" {
+  bucket = aws_s3_bucket.bucketttt95.id
+   index_document {
+    suffix = "index.html"
+  }
+  error_document {
+    key = "/index.html"
+  }
+}
+# UPLOAD OBJECT 
+resource "aws_s3_bucket_acl" "c_acl" {
+  bucket = aws_s3_bucket.bucketttt95.id
   acl    = "log-delivery-write"
 }
 locals {
   s3_origin_id = "myS3Origin"
+}
+# POLICY 
+resource "aws_s3_bucket_policy" "Attach_policy" {
+  bucket = aws_s3_bucket.bucketttt95.id
+  policy = data.aws_iam_policy_document.policy.json
+}
+data "aws_iam_policy_document" "policy" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = [
+      "s3:*",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucketttt95.arn}/*",
+    ]
+  }
 }
 resource "aws_cloudfront_origin_access_identity" "example" {
   comment = "Some comment"
 }
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name = aws_s3_bucket.bucket.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.bucketttt95.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.example.cloudfront_access_identity_path
@@ -64,7 +94,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
   price_class = "PriceClass_200"
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = true 
     }
     restrictions {
     geo_restriction {
