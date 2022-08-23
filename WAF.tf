@@ -3,6 +3,9 @@ resource "aws_wafv2_web_acl" "WAF" {
   name        = "WAF_Cloudfront"
   description = "Example of a managed rule."
   scope       = "CLOUDFRONT"
+  default_action {
+    allow {}
+  }
   rule {
     name     = "rule-1"
     priority = 1
@@ -98,3 +101,4 @@ resource "aws_wafv2_web_acl" "WAF" {
     metric_name                = "friendly-metric-name"
     sampled_requests_enabled   = false
   }
+}
